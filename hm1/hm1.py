@@ -57,6 +57,7 @@ if is_leap:
 else:
     print("Год не високосный", end="\n\n")
 
+#Расчет дней в году 
 days_year = 0
 
 for name, n_day, l_day in MONTHS:
@@ -66,6 +67,49 @@ for name, n_day, l_day in MONTHS:
         days_year+= n_day
 
 print(f"Количество дней в {year} году - {days_year} дней ", end="\n\n")
-print(f'{year}, {month}')
 
+if month==0:
+    raise SystemExit
 
+# Построение календаря
+month_index = month - 1
+
+# Сколько дней прошло от 0 года до year 
+total_days = 0
+for y in range(year):
+    y_leap = (y % LEAP_A == 0 and y % LEAP_B != 0) or (y % LEAP_C == 0)
+    for name, n_day, l_day in MONTHS:
+        total_days += l_day if y_leap else n_day
+
+# Дни предыдущих месяцев текущего года
+for i in range(month_index):
+    name, n_day, l_day = MONTHS[i]
+    total_days += l_day if is_leap else n_day
+
+first_wd = (FIRST_WEEKDAY + total_days) % len(WEEKDAYS)
+
+name, n_day, l_day = MONTHS[month_index]
+days_month = l_day if is_leap else n_day
+
+# Сокращения
+k = 1
+while len({wd[:k] for wd in WEEKDAYS}) < len(WEEKDAYS):
+    k += 1
+short = [wd[:k] for wd in WEEKDAYS]
+
+cell = max(len(s) for s in short) + 1
+
+# Заголовок
+print(" " * cell*2 + f"{name.strip()} {year}")
+
+# Шапка: каждое сокращение по центру/справа в клетке шириной cell
+print("".join(f"{s:^{cell}}" for s in short))
+
+line = " " * (first_wd * cell)
+for day in range(1, days_month + 1):
+    line += f"{day:^{cell}}"
+    if (first_wd + day) % len(WEEKDAYS) == 0:
+        print(line)
+        line = ""
+if line.strip():
+    print(line)
