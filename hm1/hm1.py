@@ -48,8 +48,8 @@ if m_row:
 
 if month <= 0 or month > len(MONTHS):
     print("Такого месяца не существует", end="\n\n")
-    
-    # Расчет весокосного года
+
+# Расчет весокосного года
 is_leap = (year % LEAP_A == 0 and year % LEAP_B != 0) or (year % LEAP_C == 0)
 
 if is_leap:
@@ -57,6 +57,15 @@ if is_leap:
 else:
     print("Год не високосный", end="\n\n")
 
+days_year = 0
+
+for name, n_day, l_day in MONTHS:
+    if is_leap:
+        days_year += l_day
+    else:
+        days_year+= n_day
+
+print(f"Количество дней в {year} году - {days_year} дней ", end="\n\n")
 print(f'{year}, {month}')
 
 
